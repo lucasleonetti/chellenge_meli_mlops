@@ -1,0 +1,111 @@
+# ------------------------------
+# Sistema operativo / Editor
+# ------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# ------------------------------
+# Python / Entornos virtuales
+# ------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+.python-version
+.venv/
+venv/
+env/
+ENV/
+
+# ------------------------------
+# Build / Packaging
+# ------------------------------
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ------------------------------
+# Testing / Calidad
+# ------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# ------------------------------
+# Jupyter
+# ------------------------------
+.ipynb_checkpoints/
+
+# ------------------------------
+# Variables sensibles
+# ------------------------------
+.env
+.env.*
+*.pem
+*.key
+
+# ------------------------------
+# Logs y temporales
+# ------------------------------
+*.log
+logs/
+tmp/
+temp/
+
+# ------------------------------
+# Artefactos de entrenamiento ML
+# ------------------------------
+artifacts/
+checkpoints/
+runs/
+mlruns/
+wandb/
+tensorboard/
+
+# ------------------------------
+# DVC (Data Version Control)
+# ------------------------------
+.dvc/cache/
+.dvc/tmp/
+.dvc/config.local
+
+# Modelos serializados
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+*.onnx
+
+# ------------------------------
+# Datos locales (no versionar datasets)
+# ------------------------------
+data/
+!data/.gitkeep
+
+# ------------------------------
+# Docker
+# ------------------------------
+*.tar
+*.tar.gz
+
+# ------------------------------
+# Terraform / IaC (despliegue)
+# ------------------------------
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
