@@ -90,10 +90,8 @@ tensorboard/
 *.onnx
 
 # ------------------------------
-# Datos locales (no versionar datasets)
+# Datos locales (no versionar datasets) (opcional, dependiendo del proyecto)
 # ------------------------------
-data/
-!data/.gitkeep
 
 # ------------------------------
 # Docker
