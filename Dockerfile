@@ -22,7 +22,8 @@ RUN useradd -m appuser
 USER appuser
 
 # Exposicion del puerto
-EXPOSE 8000
+EXPOSE 8080
 
-# ejecución
-CMD ["python", "src/app.py"]
+# ejecución (GCP Cloud run en nuestro caso)
+# Asegúrate de usar uvicorn directamente para producción
+CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8080"]
