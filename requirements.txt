@@ -5,4 +5,5 @@ pandas==3.0.0
 joblib==1.3.2
 pydantic==2.12.5
 pytest==8.0.0
-httpx==0.26.0  # Para testing del cliente
+httpx==0.26.0
+dvc==3.66.1
