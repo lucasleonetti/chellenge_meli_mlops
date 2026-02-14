@@ -1,0 +1,90 @@
+name: MLOps Pipeline 🚀
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1 # Dallas es us-south1
+  SERVICE_NAME: house-predictor-api
+
+jobs:
+  # ------------------------------------------------------------------
+  # JOB 1: CI (Continuous Integration) - Calidad y Tests
+  # ------------------------------------------------------------------
+  ci-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest httpx
+
+      - name: Linting (Calidad de Código)
+        # Esto falla si tienes errores graves de sintaxis
+        run: |
+          pip install flake8
+          # E501 ignora lineas largas, F401 ignora imports no usados
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Train Model (Reproducibility Check)
+        # Entrenamos el modelo AQUÍ para asegurar que el código funciona
+        # y generar el .pkl necesario para los tests
+        run: python src/train.py
+
+      - name: Run Tests
+        # Si esto falla, el despliegue NUNCA ocurre
+        run: pytest
+
+  # ------------------------------------------------------------------
+  # JOB 2: CD (Continuous Deployment) - Despliegue a Cloud Run
+  # ------------------------------------------------------------------
+  cd-deploy:
+    needs: ci-tests  # Solo corre si CI pasa
+    if: github.ref == 'refs/heads/main' # Solo despliega si es push a main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Autenticación con Google Cloud
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # Configurar Docker para que pueda pushear a Google Container Registry
+      - name: Configure Docker
+        run: gcloud auth configure-docker
+
+      # Construir y Subir la Imagen Docker
+      - name: Build and Push Container
+        run: |
+          docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} .
+          docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }}
+
+      # Desplegar en Cloud Run
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+          flags: '--allow-unauthenticated --port=8080' # Puerto importante
+
+      - name: Show Output
+        run: echo "🚀 Despliegue exitoso en ${{ steps.deploy.outputs.url }}"
