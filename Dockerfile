@@ -16,12 +16,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar TODO el código (incluyendo src/data/kc_house_data.csv que ya forzamos en git)
+# Copiar TODO el código (incluyendo src/data/kc_house_data.csv que ya forzamos en git para que cuando construya la imagen lo tenga disponible)
 COPY . .
 
-# --- LA SOLUCIÓN MÁGICA ---
 # Ejecutamos el entrenamiento DENTRO de la construcción de la imagen.
-# Esto genera models/model.pkl y lo deja guardado en la imagen.
+# Esto genera models/model.pkl y lo deja guardado en la imagen. (para este pequenio proyecto es ideal, no para grandes modelos o datasets)
 RUN python src/train.py
 # --------------------------
 
@@ -32,6 +31,5 @@ USER appuser
 # Exponer el puerto
 EXPOSE 8080
 
-# Comando de inicio usando la variable de entorno PORT (Cloud Run friendly)
-# Usamos shell form (sh -c) para que lea la variable $PORT correctamente
+# ejecutar la API con Uvicorn
 CMD uvicorn src.app:app --host 0.0.0.0 --port 8080
