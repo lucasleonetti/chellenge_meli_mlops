@@ -57,7 +57,19 @@ La aplicación se encuentra desplegada y operativa en Google Cloud Run.
 
     - Documentación Interactiva (Swagger): https://mlops-meli-1091336880261.us-south1.run.app/docs
 
-Puedes probar el endpoint /predict enviando el siguiente JSON:
+Puedes probar el endpoint /predict enviando el siguiente JSON meidante POST:
+
+    ```json
+    {
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "sqft_living": 2000,
+    "sqft_lot": 5000,
+    "floors": 1,
+    "waterfront": 0,
+    "view": 0,
+    }
+    ```
 
 ### 🛡️Notas de Seguridad y MLOps
 
